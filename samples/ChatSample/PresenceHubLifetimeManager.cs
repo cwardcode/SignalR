@@ -142,9 +142,9 @@ namespace ChatSample
             return _wrappedHubLifetimeManager.InvokeAllAsync(methodName, args);
         }
 
-        public override Task InvokeAllExceptAsync(List<string> excludedIds, string methodName, object[] args)
+        public override Task InvokeAllExceptAsync(string methodName, object[] args, IReadOnlyCollection<string> excludedIds)
         {
-            return _wrappedHubLifetimeManager.InvokeAllExceptAsync( excludedIds, methodName, args);
+            return _wrappedHubLifetimeManager.InvokeAllExceptAsync(methodName, args, excludedIds);
         }
 
         public override Task InvokeConnectionAsync(string connectionId, string methodName, object[] args)

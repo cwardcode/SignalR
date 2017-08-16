@@ -493,14 +493,13 @@ namespace Microsoft.AspNetCore.SignalR.Tests
 
                 await Task.WhenAll(firstClient.Connected, secondClient.Connected, thirdClient.Connected).OrTimeout();
 
-                var excludeSecondClientId = new List<string>();
+                var excludeSecondClientId = new HashSet<string>();
                 excludeSecondClientId.Add(secondClient.Connection.ConnectionId);
-
-                var excludeThirdClientId = new List<string>();
+                var excludeThirdClientId =  new HashSet<string>();
                 excludeThirdClientId.Add(thirdClient.Connection.ConnectionId);
 
-                await firstClient.SendInvocationAsync("SendToAllExcept", excludeThirdClientId, "To second").OrTimeout();
-                await firstClient.SendInvocationAsync("SendToAllExcept", excludeSecondClientId, "To third").OrTimeout();
+                await firstClient.SendInvocationAsync("SendToAllExcept", "To second", excludeThirdClientId).OrTimeout();
+                await firstClient.SendInvocationAsync("SendToAllExcept", "To third", excludeSecondClientId).OrTimeout();
 
                 var secondClientResult = await secondClient.Read().OrTimeout();
                 var invocation = Assert.IsType<InvocationMessage>(secondClientResult);
@@ -991,7 +990,7 @@ namespace Microsoft.AspNetCore.SignalR.Tests
             {
             }
 
-            public Task SendToAllExcept(List<string> excludedIds, string message)
+            public Task SendToAllExcept(string message, IReadOnlyList<string> excludedIds)
             {
                 return Clients.AllExcept(excludedIds).InvokeAsync("Send", message);
             }

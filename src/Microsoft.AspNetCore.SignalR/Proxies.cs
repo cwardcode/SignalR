@@ -58,9 +58,9 @@ namespace Microsoft.AspNetCore.SignalR
     public class AllClientsExceptProxy<THub> : IClientProxy
     {
         private readonly HubLifetimeManager<THub> _lifetimeManager;
-        private readonly List<string> _excludedIds;
+        private IReadOnlyCollection<string> _excludedIds;
 
-        public AllClientsExceptProxy(HubLifetimeManager<THub> lifetimeManager, List<string> excludedIds)
+        public AllClientsExceptProxy(HubLifetimeManager<THub> lifetimeManager, IReadOnlyCollection<string> excludedIds)
         {
             _lifetimeManager = lifetimeManager;
             _excludedIds = excludedIds;
@@ -68,7 +68,7 @@ namespace Microsoft.AspNetCore.SignalR
 
         public Task InvokeAsync(string method, params object[] args)
         {
-            return _lifetimeManager.InvokeAllExceptAsync(_excludedIds, method, args);
+            return _lifetimeManager.InvokeAllExceptAsync(method, args, _excludedIds);
         }
     }
 

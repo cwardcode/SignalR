@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Internal.Protocol;
@@ -140,11 +141,12 @@ namespace Microsoft.AspNetCore.SignalR
             return invocationId.ToString();
         }
 
-        public override Task InvokeAllExceptAsync(List<string> excludedIds, string methodName, object[] args)
+        public override Task InvokeAllExceptAsync(string methodName, object[] args, IReadOnlyCollection<string> excludedIds)
         {
             return InvokeAllWhere(methodName, args, connection =>
             {
-                return !excludedIds.Contains(connection.ConnectionId);
+                var excludedIdsSet = new HashSet<string>(excludedIds);
+                return !excludedIdsSet.Contains(connection.ConnectionId);
             });
         }
 
