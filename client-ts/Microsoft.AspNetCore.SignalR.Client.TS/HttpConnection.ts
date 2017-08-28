@@ -47,7 +47,7 @@ export class HttpConnection implements IConnection {
 
     private async startInternal(): Promise<void> {
         try {
-            let negotiatePayload = await this.httpClient.options(this.url);
+			let negotiatePayload = yield this.httpClient.options(this.url, this.options.headers);
             let negotiateResponse: INegotiateResponse = JSON.parse(negotiatePayload);
             this.connectionId = negotiateResponse.connectionId;
 
